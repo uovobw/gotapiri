@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<infos>
+		<info type="channelID">
+			<![CDATA[0]]>
+		</info>
+		<info type="channelName">
+			<![CDATA[Tapiri]]>
+		</info>
+		<info type="userID">
+			<![CDATA[490439424]]>
+		</info>
+		<info type="userName">
+			<![CDATA[Newfag_aTest]]>
+		</info>
+		<info type="userRole">
+			<![CDATA[0]]>
+		</info>
+	</infos>
+	<users>
+		<user userID="490439424" userRole="0" channelID="0">
+			<![CDATA[Newfag_aTest]]>
+		</user>
+		<user userID="471536092" userRole="0" channelID="0">
+			<![CDATA[Newfag_tapirc]]>
+		</user>
+		<user userID="6" userRole="1" channelID="0">
+			<![CDATA[lollum]]>
+		</user>
+	</users>
+	<messages>
+		<message id="212116" dateTime="Tue, 03 Sep 2013 01:02:51 +0200" userID="471536092" userRole="0" channelID="0">
+			<username>
+				<![CDATA[Newfag_tapirc]]>
+			</username>
+			<text>
+				<![CDATA[uovobw: http://golang.org/pkg/encoding/xml/#Unmarshal ci sara&#39; uno schema della chat?]]>
+			</text>
+		</message>
+		<message id="212117" dateTime="Tue, 03 Sep 2013 01:02:51 +0200" userID="471536092" userRole="0" channelID="0">
+			<username>
+				<![CDATA[Newfag_tapirc]]>
+			</username>
+			<text>
+				<![CDATA[uovobw: mioddio]]>
+			</text>
+		</message>
+	</messages>
+</root>

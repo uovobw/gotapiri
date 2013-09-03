@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<infos>
+	</infos>
+	<users>
+		<user userID="4" userRole="1" channelID="0">
+			<![CDATA[Jei]]>
+		</user>
+		<user userID="480525000" userRole="0" channelID="0">
+			<![CDATA[Newfag_514167]]>
+		</user>
+		<user userID="434572436" userRole="0" channelID="0">
+			<![CDATA[Newfag_argh]]>
+		</user>
+		<user userID="471536092" userRole="0" channelID="0">
+			<![CDATA[Newfag_tapirc]]>
+		</user>
+		<user userID="6" userRole="1" channelID="0">
+			<![CDATA[lollum]]>
+		</user>
+	</users>
+	<messages>
+		<message id="212109" dateTime="Tue, 03 Sep 2013 00:54:01 +0200" userID="434572436" userRole="0" channelID="0">
+			<username>
+				<![CDATA[Newfag_argh]]>
+			</username>
+			<text>
+				<![CDATA[disease]]>
+			</text>
+		</message>
+	</messages>
+</root>
