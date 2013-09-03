@@ -1,0 +1,1 @@
+{ "ajaxchat": { "ajaxchannel": "chan", "ajaxpass": "aPass", "channel": "##aChan", "login_url": "https://chat.tapiri.org" }, "general": { "basedir": "/some/path" }, "tumbl": { "app_key": "ddsfsfdsdfsfd", "app_secret": "ddsfsfdsdfsfd", "oauth_token": "ddsfsfdsdfsfd", "oauth_token_secret": "ddsfsfdsdfsfd" }}
