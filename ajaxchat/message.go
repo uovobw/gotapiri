@@ -1,7 +1,9 @@
-package main
+package ajaxchat
 
 import (
 	"encoding/xml"
+	"io"
+	"io/ioutil"
 )
 
 type XmlData struct {
@@ -32,9 +34,14 @@ type User struct {
 	ChannelID string `xml:"channelID,attr"`
 }
 
-func ParseData(data []byte) (v *XmlData, e error) {
+func ParseData(source io.ReadCloser) (v *XmlData, e error) {
+	data, err := ioutil.ReadAll(source)
+	if err != nil {
+		return nil, e
+	}
+	defer source.Close()
 	v = &XmlData{}
-	err := xml.Unmarshal([]byte(data), v)
+	err = xml.Unmarshal([]byte(data), v)
 	if err != nil {
 		return nil, e
 	}
