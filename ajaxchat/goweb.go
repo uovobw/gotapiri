@@ -37,7 +37,7 @@ func UpdateLoop() {
 		if err != nil {
 			fmt.Printf("error getting update from chat: %s\n", err)
 		}
-		xmlData, err := ParseData(resp.Body)
+		xmlData, err := ParseFromXml(resp.Body)
 		if err != nil {
 			fmt.Printf("error in parsing data: %s\n", err)
 		}

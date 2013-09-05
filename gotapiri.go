@@ -5,8 +5,8 @@ import (
 	"flag"
 	"fmt"
 	irc "github.com/fluffle/goirc/client"
+	"github.com/uovobw/gotapiri/ajaxchat"
 	"os"
-	"tapiri.org/uovobw/gotapiri/ajaxchat"
 )
 
 const ircChannel = "##tapiri"

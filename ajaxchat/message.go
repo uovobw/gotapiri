@@ -34,7 +34,7 @@ type User struct {
 	ChannelID string `xml:"channelID,attr"`
 }
 
-func ParseData(source io.ReadCloser) (v *XmlData, e error) {
+func ParseFromXml(source io.ReadCloser) (v *XmlData, e error) {
 	data, err := ioutil.ReadAll(source)
 	if err != nil {
 		return nil, e

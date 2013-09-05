@@ -6,13 +6,13 @@ import (
 	"testing"
 )
 
-func TestParseData(t *testing.T) {
+func TestParseFromXml(t *testing.T) {
 	filename := "test_data/login_fragment.xml"
 	file, err := os.Open(filename)
 	if err != nil {
 		t.Fatalf("failed: %s", err)
 	}
-	xml, err := ParseData(file)
+	xml, err := ParseFromXml(file)
 	if err != nil {
 		t.Fatalf(fmt.Sprintf("%s", err))
 	}
