@@ -2,17 +2,17 @@ package ajaxchat
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 )
 
 func TestParseData(t *testing.T) {
 	filename := "test_data/login_fragment.xml"
-	data, err := ioutil.ReadFile(filename)
+	file, err := os.Open(filename)
 	if err != nil {
 		t.Fatalf("failed: %s", err)
 	}
-	xml, err := ParseData(data)
+	xml, err := ParseData(file)
 	if err != nil {
 		t.Fatalf(fmt.Sprintf("%s", err))
 	}

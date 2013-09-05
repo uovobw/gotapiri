@@ -101,7 +101,7 @@ func Init() (err error) {
 		"login":       {"login"},
 		"redirect":    {""},
 		"username":    {config.Get("ajaxchat", "ajaxuser")},
-		"password":    {""},
+		"password":    {config.Get("ajaxchat", "ajaxpass")},
 		"channelName": {config.Get("ajaxchat", "ajaxchannel")},
 		"lang":        {"en"},
 		"submit":      {"Login"},
