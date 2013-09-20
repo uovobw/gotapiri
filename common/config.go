@@ -1,11 +1,10 @@
-package ajaxchat
+package common
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
-	"runtime"
 )
 
 type Config map[string]ConfigItem
@@ -26,9 +25,6 @@ func ReadConfigFrom(filename string) (c Config, e error) {
 }
 
 func (c Config) Get(section, key string) (value string) {
-	fmt.Printf("(%s,%s)->%+v\n", section, key, c)
-	_, f, l, _ := runtime.Caller(1)
-	fmt.Printf("%s:%d", f, l)
 	sectionVal, ok := c[section]
 	if !ok {
 		panic(fmt.Sprintf("no such config section %s", section))

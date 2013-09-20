@@ -11,7 +11,11 @@ import (
 
 const ircChannel = "##tapiri"
 
-var incoming = make(chan string)
+var incoming = make(chan string, 10)
+
+func Log(msg string) {
+	fmt.Printf("MAIN: %s\n", msg)
+}
 
 func ReadInput() {
 	scanner := bufio.NewScanner(os.Stdin)
@@ -32,6 +36,7 @@ func main() {
 	flag.Parse() // parses the logging flags.
 
 	// IRC INIT
+	Log("Create irc client")
 	c := irc.SimpleClient("gotapirc")
 	c.EnableStateTracking()
 	c.SSL = true
@@ -42,6 +47,7 @@ func main() {
 	c.AddHandler("privmsg", func(conn *irc.Conn, line *irc.Line) { fmt.Println(line.Nick + ":" + line.Args[1]) })
 
 	// WEBCHAT INIT
+	Log("Create webchat client")
 	err := ajaxchat.Init()
 	if err != nil {
 		fmt.Printf("Cannot create webclient: %s\n", err)
@@ -49,17 +55,20 @@ func main() {
 	}
 
 	// IRC connect
+	Log("Connect irc client")
 	if err := c.Connect("irc.freenode.net"); err != nil {
 		fmt.Printf("Connection error: %s\n", err)
 	}
 
 	// WEBCHAT update
+	Log("Connect webchat client")
 	go ajaxchat.UpdateLoop()
 
 	// start processing input
-	go ReadInput()
+	//go ReadInput()
 
 	// Wait for disconnect
+	Log("In incoming message loop")
 	for {
 		select {
 		case <-quit:
