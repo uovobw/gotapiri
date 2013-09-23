@@ -20,7 +20,7 @@ var ajaxClient *http.Client
 var lastID = "0"
 var config common.Config
 
-var FromAjaxResult = make(chan *XmlData, 10)
+var FromAjaxMessage = make(chan *common.XmlData, 10)
 
 func Log(msg string) {
 	fmt.Printf("AC: %s\n", msg)
@@ -43,12 +43,14 @@ func UpdateLoop() {
 		if err != nil {
 			fmt.Printf("error getting update from chat: %s\n", err)
 		}
-		xmlData, err := ParseFromXml(resp.Body)
+		xmlData, err := common.ParseFromXml(resp.Body)
 		if err != nil {
 			fmt.Printf("error in parsing data: %s\n", err)
 		}
-		fmt.Printf("got xmldata as: %+v\n", xmlData)
-		FromAjaxResult <- xmlData
+		FromAjaxMessage <- xmlData
+		for _, msg := range xmlData.Messages {
+			lastID = msg.Id
+		}
 		//printBody(resp)
 		time.Sleep(sleeptime * time.Second)
 	}
@@ -110,8 +112,8 @@ func Init() (err error) {
 	loginData := url.Values{
 		"login":       {"login"},
 		"redirect":    {""},
-		"username":    {config.Get("ajaxchat", "ajaxuser")},
-		"password":    {""},
+		"userName":    {config.Get("ajaxchat", "ajaxuser")},
+		"password":    {config.Get("ajaxchat", "ajaxpass")},
 		"channelName": {config.Get("ajaxchat", "ajaxchannel")},
 		"lang":        {"en"},
 		"submit":      {"Login"},
@@ -122,5 +124,19 @@ func Init() (err error) {
 	if err != nil {
 		return errors.New(fmt.Sprintf("could not finalize login: %s\n", err))
 	}
+	return nil
+}
+
+func PostMessage(username, message string) (err error) {
+	postData := url.Values{
+		"ajax":   {"true"},
+		"text":   {username + ": " + message},
+		"lastID": {lastID},
+	}
+	_, err = ajaxClient.PostForm(config.Get("ajaxchat", "msg_url"), postData)
+	if err != nil {
+		return errors.New(fmt.Sprintf("could not post message: %s\n", err))
+	}
+	Log(fmt.Sprintf("sending: %s", postData["text"]))
 	return nil
 }

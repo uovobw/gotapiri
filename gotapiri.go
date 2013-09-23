@@ -4,12 +4,10 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	irc "github.com/fluffle/goirc/client"
 	"github.com/uovobw/gotapiri/ajaxchat"
+	"github.com/uovobw/gotapiri/ircchat"
 	"os"
 )
-
-const ircChannel = "##tapiri"
 
 var incoming = make(chan string, 10)
 
@@ -24,40 +22,26 @@ func ReadInput() {
 	}
 }
 
-func SendToIrc(d *ajaxchat.XmlData) {
-	go func() {
-		for _, msg := range d.Messages {
-			incoming <- fmt.Sprintf("%s: %s", msg.Username, msg.Text)
-		}
-	}()
-}
-
 func main() {
 	flag.Parse() // parses the logging flags.
-
-	// IRC INIT
-	Log("Create irc client")
-	c := irc.SimpleClient("gotapirc")
-	c.EnableStateTracking()
-	c.SSL = true
-
-	c.AddHandler(irc.CONNECTED, func(conn *irc.Conn, line *irc.Line) { conn.Join(ircChannel) })
-	quit := make(chan bool)
-	c.AddHandler(irc.DISCONNECTED, func(conn *irc.Conn, line *irc.Line) { quit <- true })
-	c.AddHandler("privmsg", func(conn *irc.Conn, line *irc.Line) { fmt.Println(line.Nick + ":" + line.Args[1]) })
 
 	// WEBCHAT INIT
 	Log("Create webchat client")
 	err := ajaxchat.Init()
 	if err != nil {
-		fmt.Printf("Cannot create webclient: %s\n", err)
+		Log(fmt.Sprintf("Cannot create webclient: %s", err))
 		os.Exit(1)
 	}
 
-	// IRC connect
-	Log("Connect irc client")
-	if err := c.Connect("irc.freenode.net"); err != nil {
-		fmt.Printf("Connection error: %s\n", err)
+	// IRCCHAT INIT
+	if err = ircchat.Init(); err != nil {
+		Log(fmt.Sprintf("Cannot create irc client: %s", err))
+		os.Exit(1)
+	}
+	// IRCCHAT connect
+	if err = ircchat.Connect(); err != nil {
+		Log(fmt.Sprintf("Cannot connect irc client: %s", err))
+		os.Exit(1)
 	}
 
 	// WEBCHAT update
@@ -68,15 +52,15 @@ func main() {
 	//go ReadInput()
 
 	// Wait for disconnect
-	Log("In incoming message loop")
+	Log("In message loop")
 	for {
 		select {
-		case <-quit:
-			os.Exit(0)
-		case msg := <-incoming:
-			c.Privmsg(ircChannel, msg)
-		case xmlData := <-ajaxchat.FromAjaxResult:
-			SendToIrc(xmlData)
+		case xmlData := <-ajaxchat.FromAjaxMessage:
+			for _, msg := range xmlData.Messages {
+				go ircchat.SendToIrc(msg.Username, msg.Text)
+			}
+		case ircMessage := <-ircchat.FromIrcMessage:
+			go ajaxchat.PostMessage(ircMessage.Username, ircMessage.Text)
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package ajaxchat
+package common
 
 import (
 	"encoding/xml"
@@ -32,6 +32,10 @@ type User struct {
 	UserID    string `xml:"userID,attr"`
 	UserRole  string `xml:"userRole,attr"`
 	ChannelID string `xml:"channelID,attr"`
+}
+
+func (m Message) ToString() (s string) {
+	return m.Username + ": " + m.Text
 }
 
 func ParseFromXml(source io.ReadCloser) (v *XmlData, e error) {

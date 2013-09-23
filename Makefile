@@ -3,7 +3,7 @@ MAIN=gotapiri.go
 TARGET=gotapiri
 
 all:
-	${GO} build ${MAIN}
+	${GO} build github.com/uovobw/gotapiri
 
 clean:
 	rm -f ${TARGET} 

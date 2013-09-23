@@ -1,4 +1,4 @@
-package ajaxchat
+package common
 
 import (
 	"fmt"
