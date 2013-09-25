@@ -127,10 +127,10 @@ func Init() (err error) {
 	return nil
 }
 
-func PostMessage(username, message string) (err error) {
+func SendToAjaxchat(msg common.Message) (err error) {
 	postData := url.Values{
 		"ajax":   {"true"},
-		"text":   {username + ": " + message},
+		"text":   {msg.Username + ": " + msg.Text},
 		"lastID": {lastID},
 	}
 	_, err = ajaxClient.PostForm(config.Get("ajaxchat", "msg_url"), postData)

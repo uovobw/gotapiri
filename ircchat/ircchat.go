@@ -45,7 +45,9 @@ func createMessageFromIrc(l *irc.Line) common.Message {
 		"",
 		"",
 		l.Nick,
-		l.Args[1]}
+		l.Args[1],
+	}
+
 }
 
 func Connect() (err error) {
@@ -57,10 +59,10 @@ func Connect() (err error) {
 	return nil
 }
 
-func SendToIrc(username, text string) {
-	go func() {
-		msg := fmt.Sprintf("%s: %s", username, text)
+func SendToIrc(m common.Message) {
+	go func(m common.Message) {
+		msg := fmt.Sprintf("%s: %s", m.Username, m.Text)
 		Log(fmt.Sprintf("sending: %s", msg))
 		ircClient.Privmsg(ircChannel, html.UnescapeString(msg))
-	}()
+	}(m)
 }

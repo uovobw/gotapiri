@@ -57,10 +57,10 @@ func main() {
 		select {
 		case xmlData := <-ajaxchat.FromAjaxMessage:
 			for _, msg := range xmlData.Messages {
-				go ircchat.SendToIrc(msg.Username, msg.Text)
+				ircchat.SendToIrc(msg)
 			}
 		case ircMessage := <-ircchat.FromIrcMessage:
-			go ajaxchat.PostMessage(ircMessage.Username, ircMessage.Text)
+			go ajaxchat.SendToAjaxchat(ircMessage)
 		}
 	}
 }
