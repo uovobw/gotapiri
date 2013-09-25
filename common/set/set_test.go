@@ -98,3 +98,18 @@ func TestRemove(t *testing.T) {
 		t.Fatalf("not removed")
 	}
 }
+
+func TestIterator(t *testing.T) {
+	s := New(0)
+	o1 := TestObj{"one", 1}
+	o2 := TestObj{"two", 2}
+	o3 := TestObj{"three", 3}
+	s.Add(o1)
+	s.Add(o2)
+	s.Add(o3)
+	for each := range s.Iterator() {
+		if each != o1 && each != o2 && each != o3 {
+			t.Fatalf("Did not get the whole set")
+		}
+	}
+}

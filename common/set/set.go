@@ -50,3 +50,14 @@ func (s *Set) Get(id string) (obj Hashable, err error) {
 func (s *Set) Remove(id string) {
 	delete(s.data, id)
 }
+
+func (s *Set) Iterator() (ret chan Hashable) {
+	ret = make(chan Hashable)
+	go func(s *Set, ret chan Hashable) {
+		for _, obj := range s.data {
+			ret <- obj
+		}
+		close(ret)
+	}(s, ret)
+	return ret
+}
