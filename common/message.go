@@ -1,6 +1,7 @@
 package common
 
 import (
+	"crypto/sha256"
 	"encoding/xml"
 	"io"
 	"io/ioutil"
@@ -36,6 +37,12 @@ type User struct {
 
 func (m Message) ToString() (s string) {
 	return m.Username + ": " + m.Text
+}
+
+func (m *Message) Hash() (hash string) {
+	h := sha256.New()
+	io.WriteString(h, m.Id+m.DateTime+m.Username+m.Text)
+	return string(h.Sum(nil))
 }
 
 func ParseFromXml(source io.ReadCloser) (v *XmlData, e error) {

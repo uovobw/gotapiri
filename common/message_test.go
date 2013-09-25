@@ -54,3 +54,53 @@ func TestParseFromXml(t *testing.T) {
 		t.Fatalf("loaded message with wrong parameters")
 	}
 }
+
+func TestHash(t *testing.T) {
+	m1 := Message{
+		"1",
+		"datetime",
+		"userid",
+		"userrole",
+		"channelid",
+		"username",
+		"text",
+	}
+	m2 := Message{
+		"1",
+		"datetime",
+		"different_userid",
+		"userrole",
+		"channelid",
+		"username",
+		"text",
+	}
+	m3 := Message{
+		"1",
+		"datetime",
+		"userid",
+		"userrole",
+		"channelid",
+		"different_username",
+		"text",
+	}
+	m4 := Message{
+		"1",
+		"datetime",
+		"userid",
+		"userrole",
+		"channelid",
+		"username",
+		"different_text",
+	}
+	hash1 := m1.Hash()
+	hash2 := m2.Hash()
+	hash3 := m3.Hash()
+	hash4 := m4.Hash()
+	if (hash1 != hash2) ||
+		(hash2 == hash3) ||
+		(hash1 == hash3) ||
+		(hash1 == hash4) {
+		t.Fatalf("hashing function not working!")
+	}
+
+}
