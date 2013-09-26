@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"github.com/uovobw/gotapiri/ajaxchat"
 	"github.com/uovobw/gotapiri/ircchat"
+	"html"
 	"os"
+	"strings"
 )
 
 var incoming = make(chan string, 10)
+var seenMessages = make(map[string]bool)
 
 func Log(msg string) {
 	fmt.Printf("MAIN: %s\n", msg)
@@ -57,10 +60,27 @@ func main() {
 		select {
 		case xmlData := <-ajaxchat.FromAjaxMessage:
 			for _, msg := range xmlData.Messages {
-				ircchat.SendToIrc(msg)
+				seen := false
+				seenmsg := ""
+				for el := range seenMessages {
+					if strings.HasSuffix(clean(msg.Text), clean(el)) {
+						seen = true
+						seenmsg = clean(el)
+						break
+					}
+				}
+				if !seen {
+					ircchat.SendToIrc(msg)
+					delete(seenMessages, seenmsg)
+				}
 			}
 		case ircMessage := <-ircchat.FromIrcMessage:
 			go ajaxchat.SendToAjaxchat(ircMessage)
+			seenMessages[clean(ircMessage.Text)] = true
 		}
 	}
+}
+
+func clean(s string) (r string) {
+	return html.UnescapeString(s)
 }

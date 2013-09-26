@@ -45,7 +45,7 @@ func createMessageFromIrc(l *irc.Line) common.Message {
 		"",
 		"",
 		l.Nick,
-		l.Args[1],
+		html.UnescapeString(l.Args[1]),
 	}
 
 }
