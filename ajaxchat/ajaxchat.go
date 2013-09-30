@@ -1,3 +1,5 @@
+// Ajaxchat abstracts the details for connecting to blueimp's AjaxChat
+// (homepage: http://frug.github.io/AJAX-Chat/ )
 package ajaxchat
 
 import (
@@ -20,12 +22,18 @@ var ajaxClient *http.Client
 var lastID = "0"
 var config common.Config
 
+// Fromajaxmessage returns the messages that are returned
+// from the webchat.
 var FromAjaxMessage = make(chan *common.XmlData, 10)
 
+// Log temporary function to abstract away the log that needs
+// to be around the code
 func Log(msg string) {
 	fmt.Printf("AC: %s\n", msg)
 }
 
+// printBody internal debugging function used to print
+// the content of an http.Response to screen for testing
 func printBody(r *http.Response) {
 	stuff, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -36,6 +44,9 @@ func printBody(r *http.Response) {
 	fmt.Printf("%s\n", stuff)
 }
 
+// Updateloop periodically polls the webchat and fetches the new
+// messages, unmarshals them from xml to a common.XmlData object and
+// publishes them via the Fromajaxmessage channel
 func UpdateLoop() {
 	Log("Running update loop")
 	for {
@@ -56,6 +67,10 @@ func UpdateLoop() {
 	}
 }
 
+// createClient initializes the http.Client used throughout the
+// module by setting the username/password BasicAuthentication
+// for each request, ignoring self-signed SSL certificates and
+// using the default in-memory cookiejar
 func createClient(user, pass string) (err error) {
 	Log("Creating client")
 	j, err := cookiejar.New(nil)
@@ -87,6 +102,9 @@ func readConfiguration(configfilename string) (c common.Config, err error) {
 	return cfg, nil
 }
 
+// Init performs the operations required to authenticate to the
+// webchat as a registered client and returns an error should any
+// http errors occur. MUST be called first on a non initialized client
 func Init() (err error) {
 	Log("In init")
 
@@ -127,6 +145,8 @@ func Init() (err error) {
 	return nil
 }
 
+// SendToAjaxchat sends a message to the webchat, must be called only
+// on an already Init-ed client of the call will fail
 func SendToAjaxchat(msg common.Message) (err error) {
 	postData := url.Values{
 		"ajax":   {"true"},

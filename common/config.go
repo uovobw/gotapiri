@@ -1,3 +1,5 @@
+// Package common contains all utility functions and
+// common data structures used in the project
 package common
 
 import (
@@ -7,9 +9,18 @@ import (
 	"os"
 )
 
+// Type Config maps the structure of the json configuration
+// file in the form section: key/value as follows:
+//          "item1" : { ... },
+//          "item2" : { ... }
 type Config map[string]ConfigItem
+
+// Type ConfigItem contains a single section key/value map
 type ConfigItem map[string]string
 
+// Function ReadConfigfFrom loads the configuration from a
+// json file passed as the parameter and returns the object
+// that it unmashalled
 func ReadConfigFrom(filename string) (c Config, e error) {
 	c = Config{}
 	pwd, _ := os.Getwd()
@@ -24,6 +35,13 @@ func ReadConfigFrom(filename string) (c Config, e error) {
 	return c, nil
 }
 
+// Function Get requires a section and a key to retrieve a configuration value,
+// so for the example:
+//      {
+//          section1 : { key1 : value1 , key2 : value2 },
+//          section2 : { key3 : value3 , key4 : value4 }
+//      }
+// the call to get value3 would be Get("section2", "key3")
 func (c Config) Get(section, key string) (value string) {
 	sectionVal, ok := c[section]
 	if !ok {

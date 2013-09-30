@@ -1,3 +1,5 @@
+// An IRC-TO-WEBCHAT partial, buggy and horrribly-written transport. Relays messages
+// from a BlueImp's AjaxChat installation to any IRC channel.
 package main
 
 import (

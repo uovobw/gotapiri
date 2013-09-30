@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 )
 
+// Type XmlData is used to unmarshal ajaxchat responses from xml
 type XmlData struct {
 	Infos    []Info    `xml:"infos>info"`
 	Messages []Message `xml:"messages>message"`
@@ -35,16 +36,24 @@ type User struct {
 	ChannelID string `xml:"channelID,attr"`
 }
 
+// Function ToString returns a human readable representation
+// of a given common.Message struct in the form
+// username: text of the message
 func (m Message) ToString() (s string) {
 	return m.Username + ": " + m.Text
 }
 
+// Function Hash implements the Hashable interface, used in
+// object sets
 func (m *Message) Hash() (hash string) {
 	h := sha256.New()
 	io.WriteString(h, m.Id+m.DateTime+m.Username+m.Text)
 	return string(h.Sum(nil))
 }
 
+// Function ParseFromXml receives a binary ReadCloser and
+// expects to unmarshal all its contents in an XmlData structure,
+// returning error on failures
 func ParseFromXml(source io.ReadCloser) (v *XmlData, e error) {
 	data, err := ioutil.ReadAll(source)
 	if err != nil {
