@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/uovobw/gotapiri/common"
+	"strings"
 )
 
 var api anaconda.TwitterApi
 var config common.Config
+var twitter_tag string
 
 const configurationFilename = "config.json"
 
@@ -20,6 +22,8 @@ func Init() (err error) {
 	if err != nil {
 		return err
 	}
+
+	twitter_tag = config.Get("twitter", "twitter_tag")
 
 	Log("Create twitter client")
 
@@ -37,14 +41,16 @@ func Init() (err error) {
 }
 
 func PostTweet(status string) (err error) {
-	if len(status) > 140 {
-		Log("Trimming tweet")
-		status = status[:140]
-	}
-	Log(fmt.Sprintf("Posting tweet: %s", status))
-	_, err = api.PostTweet(status, nil)
-	if err != nil {
-		return err
+	if strings.Contains(status, twitter_tag) {
+		if len(status) > 140 {
+			Log("Trimming tweet")
+			status = status[:140]
+		}
+		Log(fmt.Sprintf("Posting tweet: %s", status))
+		_, err = api.PostTweet(status, nil)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
