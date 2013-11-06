@@ -10,6 +10,7 @@ import (
 var api anaconda.TwitterApi
 var config common.Config
 var twitter_tag string
+var lastTweet string
 
 const configurationFilename = "config.json"
 
@@ -40,14 +41,24 @@ func Init() (err error) {
 	return nil
 }
 
-func PostTweet(status string) (err error) {
-	if strings.Contains(status, twitter_tag) {
-		if len(status) > 140 {
+func PostTweet(status common.Message) (err error) {
+	msg := status.Text
+	user := status.Username
+	// TODO: fix deduplication of tweets
+	if msg == lastTweet {
+		return nil
+	} else {
+		lastTweet = msg
+	}
+	if strings.Contains(msg, twitter_tag) {
+		msg = strings.Replace(msg, twitter_tag, "", -1)
+		msg = strings.Replace(msg, user, "", -1)
+		if len(msg) > 140 {
 			Log("Trimming tweet")
-			status = status[:140]
+			msg = msg[:140]
 		}
-		Log(fmt.Sprintf("Posting tweet: %s", status))
-		_, err = api.PostTweet(status, nil)
+		Log(fmt.Sprintf("Posting tweet: %s", msg))
+		_, err = api.PostTweet(msg, nil)
 		if err != nil {
 			return err
 		}

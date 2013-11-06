@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/uovobw/gotapiri/ajaxchat"
+	"github.com/uovobw/gotapiri/common"
 	"github.com/uovobw/gotapiri/ircchat"
 	"github.com/uovobw/gotapiri/twitter"
 	"html"
@@ -16,7 +17,7 @@ import (
 
 var incoming = make(chan string, 10)
 var seenMessages = make(map[string]bool)
-var toTwitter = make(chan string, 2)
+var toTwitter = make(chan string, 10)
 
 func Log(msg string) {
 	fmt.Printf("MAIN: %s\n", msg)
@@ -65,8 +66,6 @@ func main() {
 	// start processing input
 	//go ReadInput()
 
-	g_PostTweet()
-
 	// Wait for disconnect
 	Log("In message loop")
 	for {
@@ -83,25 +82,25 @@ func main() {
 					}
 				}
 				if !seen {
-					toTwitter <- msg.Text
+					go g_PostTweet(msg)
 					ircchat.SendToIrc(msg)
 					delete(seenMessages, seenmsg)
 				}
 			}
 		case ircMessage := <-ircchat.FromIrcMessage:
 			go ajaxchat.SendToAjaxchat(ircMessage)
+			go g_PostTweet(ircMessage)
 			seenMessages[clean(ircMessage.Text)] = true
 		}
 	}
 }
 
-func g_PostTweet() {
+func g_PostTweet(msg common.Message) {
 	// if posting the tweet fails we silently ignore
-	Log("Running twitter goroutine")
-	go func() {
-		t := <-toTwitter
-		twitter.PostTweet(t)
-	}()
+	err := twitter.PostTweet(msg)
+	if err != nil {
+		Log(fmt.Sprintf("Error posting tweet! %s", err))
+	}
 }
 
 func clean(s string) (r string) {
