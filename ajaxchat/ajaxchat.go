@@ -50,20 +50,22 @@ func printBody(r *http.Response) {
 func UpdateLoop() {
 	Log("Running update loop")
 	for {
+		time.Sleep(sleeptime * time.Second)
 		resp, err := ajaxClient.Get(config.Get("ajaxchat", "login_url") + "?" + "ajax=true&lastID=" + lastID)
 		if err != nil {
 			fmt.Printf("error getting update from chat: %s\n", err)
+			continue
 		}
 		xmlData, err := common.ParseFromXml(resp.Body)
 		if err != nil {
 			fmt.Printf("error in parsing data: %s\n", err)
+			continue
 		}
 		FromAjaxMessage <- xmlData
 		for _, msg := range xmlData.Messages {
 			lastID = msg.Id
 		}
 		//printBody(resp)
-		time.Sleep(sleeptime * time.Second)
 	}
 }
 
