@@ -57,6 +57,7 @@ func UpdateLoop() {
 			continue
 		}
 		xmlData, err := common.ParseFromXml(resp.Body)
+		resp.Body.Close()
 		if err != nil {
 			fmt.Printf("error in parsing data: %s\n", err)
 			continue
