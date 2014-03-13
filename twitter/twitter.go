@@ -9,11 +9,12 @@ import (
 
 var api anaconda.TwitterApi
 var config common.Config
-var twitter_tag string
+var twitterTag string
 var lastTweet string
 
 const configurationFilename = "config.json"
 
+// Log Messages for Twitter pkg
 func Log(msg string) {
 	fmt.Printf("TWITTER: %s\n", msg)
 }
@@ -24,7 +25,7 @@ func Init() (err error) {
 		return err
 	}
 
-	twitter_tag = config.Get("twitter", "twitter_tag")
+	twitterTag = config.Get("twitter", "twitter_tag")
 
 	Log("Create twitter client")
 
@@ -38,7 +39,7 @@ func Init() (err error) {
 
 	api = anaconda.NewTwitterApi(oauthToken, oauthTokenSecret)
 
-	return nil
+	return
 }
 
 func PostTweet(status common.Message) (err error) {
@@ -47,11 +48,10 @@ func PostTweet(status common.Message) (err error) {
 	// TODO: fix deduplication of tweets
 	if msg == lastTweet {
 		return nil
-	} else {
-		lastTweet = msg
 	}
-	if strings.Contains(msg, twitter_tag) {
-		msg = strings.Replace(msg, twitter_tag, "", -1)
+	lastTweet = msg
+	if strings.Contains(msg, twitterTag) {
+		msg = strings.Replace(msg, twitterTag, "", -1)
 		msg = strings.Replace(msg, user, "", -1)
 		if len(msg) > 140 {
 			Log("Trimming tweet")
