@@ -91,24 +91,34 @@ func main() {
 					}
 				}
 				if !seen {
-					go g_PostTweet(msg)
+					go gPostTweet(msg)
+					go gPostImage(msg)
 					ircchat.SendToIrc(msg)
 					delete(seenMessages, seenmsg)
 				}
 			}
 		case ircMessage := <-ircchat.FromIrcMessage:
 			go ajaxchat.SendToAjaxchat(ircMessage)
-			go g_PostTweet(ircMessage)
+			go gPostTweet(ircMessage)
+			go gPostImage(ircMessage)
 			seenMessages[clean(ircMessage.Text)] = true
 		}
 	}
 }
 
-func g_PostTweet(msg common.Message) {
+func gPostTweet(msg common.Message) {
 	// if posting the tweet fails we silently ignore
 	err := twitter.PostTweet(msg)
 	if err != nil {
 		Log(fmt.Sprintf("Error posting tweet! %s", err))
+	}
+}
+
+func gPostImage(msg common.Message) {
+	// if posting the tweet fails we silently ignore
+	err := tumblr.PostImage(msg)
+	if err != nil {
+		Log(fmt.Sprintf("Error posting image! %s", err))
 	}
 }
 

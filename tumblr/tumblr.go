@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"github.com/MariaTerzieva/gotumblr"
 	"github.com/uovobw/gotapiri/common"
+	"regexp"
+	"strings"
 )
 
 var (
-	client = new(gotumblr.TumblrRestClient)
-	config common.Config
+	client  = new(gotumblr.TumblrRestClient)
+	config  common.Config
+	lastMsg string
 )
 
 const configurationFilename = "config.json"
@@ -35,5 +38,37 @@ func Init() (err error) {
 
 	client = gotumblr.NewTumblrRestClient(appKey, appSecret, oauthToken, oauthTokenSecret, callbackURL, "http://api.tumblr.com")
 
+	return
+}
+
+//Postimage post an image on tumblr
+func PostImage(status common.Message) (err error) {
+	msg := status.Text
+	if msg == lastMsg {
+		return
+	}
+	imgRegexp := regexp.MustCompile(config.Get("ajaxchat", "img_regex"))
+	imagesUrls := imgRegexp.FindAllString(msg, -1)
+	if len(imagesUrls) == 0 {
+		return
+	}
+	tagsRe := regexp.MustCompile("\\[(\\S+?)\\]")
+	tags := tagsRe.FindAllString(msg, -1)
+	for i, tag := range tags {
+		tags[i] = strings.Replace(strings.Trim(tag, "[] "), " ", "_", -1)
+	}
+	tagList := strings.Join(tags, ",")
+	for _, image := range imagesUrls {
+		options := map[string]string{
+			"tags":   tagList,
+			"source": image,
+		}
+		Log(fmt.Sprintf("Posting on tumblr: %s with tags %s", image, tags))
+		err = client.CreatePhoto(config.Get("tumblr", "url"), options)
+		if err != nil {
+			return
+		}
+	}
+	lastMsg = msg
 	return
 }
