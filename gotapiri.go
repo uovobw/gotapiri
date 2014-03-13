@@ -9,6 +9,7 @@ import (
 	"github.com/uovobw/gotapiri/ajaxchat"
 	"github.com/uovobw/gotapiri/common"
 	"github.com/uovobw/gotapiri/ircchat"
+	"github.com/uovobw/gotapiri/tumblr"
 	"github.com/uovobw/gotapiri/twitter"
 	"html"
 	"os"
@@ -19,10 +20,12 @@ var incoming = make(chan string, 10)
 var seenMessages = make(map[string]bool)
 var toTwitter = make(chan string, 10)
 
+//Log for main package
 func Log(msg string) {
 	fmt.Printf("MAIN: %s\n", msg)
 }
 
+//ReadInput and send to the incoming messages
 func ReadInput() {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
@@ -50,6 +53,12 @@ func main() {
 	// TWITTER INIT
 	if err = twitter.Init(); err != nil {
 		Log(fmt.Sprintf("Cannot create twitter client: %s", err))
+		os.Exit(1)
+	}
+
+	// TUMBLR connect
+	if err = tumblr.Init(); err != nil {
+		Log(fmt.Sprintf("Cannot connect tumblr client: %s", err))
 		os.Exit(1)
 	}
 
