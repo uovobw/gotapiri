@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"github.com/MariaTerzieva/gotumblr"
 	"github.com/uovobw/gotapiri/common"
-	"strings"
 )
 
-var client = gotumblr.TumblrRestClient
-var config common.Config
+var (
+	client = new(gotumblr.TumblrRestClient)
+	config common.Config
+)
 
 const configurationFilename = "config.json"
 
@@ -23,8 +24,6 @@ func Init() (err error) {
 	if err != nil {
 		return err
 	}
-
-	tumblrTag = config.Get("tumblr", "tumblrTag")
 
 	Log("Create tumblr client")
 

@@ -7,10 +7,12 @@ import (
 	"strings"
 )
 
-var api anaconda.TwitterApi
-var config common.Config
-var twitterTag string
-var lastTweet string
+var (
+	api        = new(anaconda.TwitterApi)
+	config     common.Config
+	twitterTag string
+	lastTweet  string
+)
 
 const configurationFilename = "config.json"
 
