@@ -9,6 +9,7 @@ import (
 	"github.com/uovobw/gotapiri/ajaxchat"
 	"github.com/uovobw/gotapiri/common"
 	"github.com/uovobw/gotapiri/ircchat"
+	"github.com/uovobw/gotapiri/tumblr"
 	"github.com/uovobw/gotapiri/twitter"
 	"html"
 	"os"
