@@ -49,7 +49,7 @@ func PostImage(status common.Message) (err error) {
 	if len(imagesUrls) == 0 {
 		return
 	}
-	tagsRe := regexp.MustCompile("\\[(\\S+?)\\]")
+	tagsRe := regexp.MustCompile("\\[(.+?)\\]")
 	tags := tagsRe.FindAllString(msg, -1)
 	for i, tag := range tags {
 		tags[i] = strings.Replace(strings.Trim(tag, "[] "), " ", "_", -1)
