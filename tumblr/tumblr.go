@@ -49,10 +49,13 @@ func PostImage(status common.Message) (err error) {
 	if len(imagesUrls) == 0 {
 		return
 	}
-	tagsRe := regexp.MustCompile("\\[(\\S+?)\\]")
-	tags := tagsRe.FindAllString(msg, -1)
-	for i, tag := range tags {
-		tags[i] = strings.Replace(strings.Trim(tag, "[] "), " ", "_", -1)
+	tagsRe := regexp.MustCompile("\\[(.+?)\\]")
+	dirtyTags := tagsRe.FindAllString(msg, -1)
+	tags := make([]string, 0, len(dirtyTags))
+	for _, tag := range dirtyTags {
+		if strings.Contains(tag, "[img]") == false && strings.Contains(tag, "[/img]") == false {
+			tags = append(tags, strings.Replace(strings.Trim(tag, "[] "), " ", "_", -1))
+		}
 	}
 	tagList := strings.Join(tags, ", ")
 	caption := strings.Join(tags, " ")
