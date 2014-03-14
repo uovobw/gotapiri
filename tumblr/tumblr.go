@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	client  = new(gotumblr.TumblrRestClient)
-	config  common.Config
-	lastMsg string
+	client = new(gotumblr.TumblrRestClient)
+	config common.Config
+	//lastMsg string
 )
 
 const configurationFilename = "config.json"
@@ -44,9 +44,6 @@ func Init() (err error) {
 //PostImage post an image on tumblr
 func PostImage(status common.Message) (err error) {
 	msg := status.Text
-	if msg == lastMsg {
-		return
-	}
 	imgRegexp := regexp.MustCompile(config.Get("ajaxchat", "img_regex"))
 	imagesUrls := imgRegexp.FindAllString(msg, -1)
 	if len(imagesUrls) == 0 {
@@ -70,6 +67,5 @@ func PostImage(status common.Message) (err error) {
 			return err
 		}
 	}
-	lastMsg = msg
 	return
 }
