@@ -47,7 +47,6 @@ func PostImage(status common.Message) (err error) {
 	imgRegexp := regexp.MustCompile(config.Get("ajaxchat", "img_regex"))
 	imagesUrls := imgRegexp.FindAllString(msg, -1)
 	if len(imagesUrls) == 0 {
-		Log("NO PICS HERE, NOTHING TO SEE")
 		return
 	}
 	tagsRe := regexp.MustCompile("\\[(\\S+?)\\]")
@@ -56,10 +55,12 @@ func PostImage(status common.Message) (err error) {
 		tags[i] = strings.Replace(strings.Trim(tag, "[] "), " ", "_", -1)
 	}
 	tagList := strings.Join(tags, ", ")
+	caption := strings.Join(tags, " ")
 	for _, image := range imagesUrls {
 		options := map[string]string{
-			"tags":   tagList,
-			"source": image,
+			"tags":    tagList,
+			"source":  image,
+			"caption": caption,
 		}
 		Log(fmt.Sprintf("Posting on tumblr: %s with tags %s", image, tags))
 		err = client.CreatePhoto(config.Get("tumblr", "url"), options)
@@ -68,6 +69,5 @@ func PostImage(status common.Message) (err error) {
 			return err
 		}
 	}
-	Log("I SHOULD HAVE WORKED RIGHTLY")
 	return
 }
