@@ -38,10 +38,10 @@ func Init() (err error) {
 
 	client = gotumblr.NewTumblrRestClient(appKey, appSecret, oauthToken, oauthTokenSecret, callbackURL, "http://api.tumblr.com")
 
-	return
+	return nil
 }
 
-//Postimage post an image on tumblr
+//PostImage post an image on tumblr
 func PostImage(status common.Message) (err error) {
 	msg := status.Text
 	if msg == lastMsg {
@@ -57,7 +57,7 @@ func PostImage(status common.Message) (err error) {
 	for i, tag := range tags {
 		tags[i] = strings.Replace(strings.Trim(tag, "[] "), " ", "_", -1)
 	}
-	tagList := strings.Join(tags, ",")
+	tagList := strings.Join(tags, ", ")
 	for _, image := range imagesUrls {
 		options := map[string]string{
 			"tags":   tagList,
@@ -66,7 +66,8 @@ func PostImage(status common.Message) (err error) {
 		Log(fmt.Sprintf("Posting on tumblr: %s with tags %s", image, tags))
 		err = client.CreatePhoto(config.Get("tumblr", "url"), options)
 		if err != nil {
-			return
+			Log(fmt.Sprintf("Error,failed to post image %s", err))
+			return err
 		}
 	}
 	lastMsg = msg

@@ -115,7 +115,7 @@ func gPostTweet(msg common.Message) {
 }
 
 func gPostImage(msg common.Message) {
-	// if posting the tweet fails we silently ignore
+	// if posting fails we silently ignore
 	err := tumblr.PostImage(msg)
 	if err != nil {
 		Log(fmt.Sprintf("Error posting image! %s", err))
