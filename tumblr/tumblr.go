@@ -47,6 +47,7 @@ func PostImage(status common.Message) (err error) {
 	imgRegexp := regexp.MustCompile(config.Get("ajaxchat", "img_regex"))
 	imagesUrls := imgRegexp.FindAllString(msg, -1)
 	if len(imagesUrls) == 0 {
+		Log("NO PICS HERE, NOTHING TO SEE")
 		return
 	}
 	tagsRe := regexp.MustCompile("\\[(\\S+?)\\]")
@@ -67,5 +68,6 @@ func PostImage(status common.Message) (err error) {
 			return err
 		}
 	}
+	Log("I SHOULD HAVE WORKED RIGHTLY")
 	return
 }
