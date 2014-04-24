@@ -60,6 +60,8 @@ func PostImage(status common.Message) (err error) {
 	tagList := strings.Join(tags, ", ")
 	caption := strings.Join(tags, " ")
 	for _, image := range imagesUrls {
+        // also add the original link
+        caption = caption + " from: " + image
 		options := map[string]string{
 			"tags":    tagList,
 			"source":  image,
