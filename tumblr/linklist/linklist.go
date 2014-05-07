@@ -1,0 +1,79 @@
+package linklist
+
+import (
+    "fmt"
+    "io/ioutil"
+    "encoding/json"
+    "os"
+    "os/signal"
+    "syscall"
+    "time"
+)
+
+type LinkList struct {
+    links map[string]bool
+}
+
+const seenUrlsFile = "seenUrls"
+
+var llist = LinkList{make(map[string]bool)}
+
+func (l LinkList) Save(filename string) {
+    data, err := json.Marshal(l.links)
+    if err != nil {
+        fmt.Println("Cannot save seen url list")
+        panic(err)
+    }
+    err = ioutil.WriteFile(filename, data, 0644)
+    if err != nil {
+        panic(err)
+    }
+}
+
+func saveMonitor() {
+    sigc := make(chan os.Signal, 1)
+    tickc := time.NewTicker(time.Second * 3600).C
+    signal.Notify(sigc,
+        syscall.SIGHUP,
+        syscall.SIGINT,
+        syscall.SIGTERM,
+        syscall.SIGQUIT)
+    for {
+        select {
+        case <-sigc:
+            fmt.Println("Signal received, saving seen urls")
+        case <-tickc:
+            fmt.Println("Timeout elapsed, saving seen urls")
+        }
+        llist.Save(seenUrlsFile)
+    }
+}
+
+func init() {
+    if _, err := os.Stat(seenUrlsFile); os.IsNotExist(err) {
+        fmt.Printf("File %s not found, assuming new one needed\n", seenUrlsFile)
+    } else {
+        data, err := ioutil.ReadFile(seenUrlsFile)
+        if err != nil {
+            fmt.Println("Error reading seen url file:", err)
+            os.Exit(1)
+        }
+        err = json.Unmarshal(data, &llist.links)
+        if err != nil {
+            fmt.Println("Error demarshaling seen url file:", err)
+            os.Exit(1)
+        }
+    }
+    // start save monitor to save the seen url list each hour OR when a signal is received
+    go saveMonitor()
+}
+
+func Uniq(linkin string) (seen bool) {
+    _, present := llist.links[linkin]
+    if present {
+        return false
+    }
+    fmt.Println(fmt.Sprintf("Added link %s", linkin))
+    llist.links[linkin] = true
+    return true
+}
