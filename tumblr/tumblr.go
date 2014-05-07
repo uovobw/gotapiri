@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/MariaTerzieva/gotumblr"
 	"github.com/uovobw/gotapiri/common"
+	"github.com/uovobw/gotapiri/tumblr/linklist"
 	"regexp"
 	"strings"
 )
@@ -60,6 +61,9 @@ func PostImage(status common.Message) (err error) {
 	tagList := strings.Join(tags, ", ")
 	caption := strings.Join(tags, " ")
 	for _, image := range imagesUrls {
+        if !linklist.Uniq(image) {
+            continue
+        }
         // also add the original link
         caption = caption + " from: " + image
 		options := map[string]string{
