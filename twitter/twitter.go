@@ -2,9 +2,10 @@ package twitter
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/uovobw/gotapiri/common"
-	"strings"
 )
 
 var (
@@ -21,10 +22,11 @@ func Log(msg string) {
 	fmt.Printf("TWITTER: %s\n", msg)
 }
 
-func Init() (err error) {
+func init() {
+	var err error
 	config, err = common.ReadConfigFrom(configurationFilename)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	twitterTag = config.Get("twitter", "twitter_tag")
@@ -40,8 +42,6 @@ func Init() (err error) {
 	anaconda.SetConsumerSecret(appSecret)
 
 	api = anaconda.NewTwitterApi(oauthToken, oauthTokenSecret)
-
-	return
 }
 
 func PostTweet(status common.Message) (err error) {

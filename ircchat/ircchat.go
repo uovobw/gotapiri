@@ -5,9 +5,10 @@ package ircchat
 
 import (
 	"fmt"
+	"html"
+
 	irc "github.com/fluffle/goirc/client"
 	"github.com/uovobw/gotapiri/common"
-	"html"
 )
 
 const ircChannel = "##tapiri"
@@ -29,10 +30,11 @@ func Log(msg string) {
 // function Init must be called first on a non-initialized irc
 // client. It will connect with SSL to a given irc server using a given
 // username, join a channel and wait for messages
-func Init() (err error) {
+func init() {
+	var err error
 	config, err = common.ReadConfigFrom(configurationFilename)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	// IRC INIT
@@ -44,8 +46,6 @@ func Init() (err error) {
 	ircClient.AddHandler(irc.CONNECTED, func(conn *irc.Conn, line *irc.Line) { conn.Join(ircChannel) })
 	ircClient.AddHandler(irc.DISCONNECTED, func(conn *irc.Conn, line *irc.Line) { Connect() })
 	ircClient.AddHandler("privmsg", func(conn *irc.Conn, line *irc.Line) { FromIrcMessage <- createMessageFromIrc(line) })
-
-	return nil
 }
 
 func createMessageFromIrc(l *irc.Line) common.Message {

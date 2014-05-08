@@ -6,14 +6,15 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"html"
+	"os"
+	"strings"
+
 	"github.com/uovobw/gotapiri/ajaxchat"
 	"github.com/uovobw/gotapiri/common"
 	"github.com/uovobw/gotapiri/ircchat"
 	"github.com/uovobw/gotapiri/tumblr"
 	"github.com/uovobw/gotapiri/twitter"
-	"html"
-	"os"
-	"strings"
 )
 
 var incoming = make(chan string, 10)
@@ -36,34 +37,8 @@ func ReadInput() {
 func main() {
 	flag.Parse() // parses the logging flags.
 
-	// WEBCHAT INIT
-	Log("Create webchat client")
-	err := ajaxchat.Init()
-	if err != nil {
-		Log(fmt.Sprintf("Cannot create webclient: %s", err))
-		os.Exit(1)
-	}
-
-	// IRCCHAT INIT
-	if err = ircchat.Init(); err != nil {
-		Log(fmt.Sprintf("Cannot create irc client: %s", err))
-		os.Exit(1)
-	}
-
-	// TWITTER INIT
-	if err = twitter.Init(); err != nil {
-		Log(fmt.Sprintf("Cannot create twitter client: %s", err))
-		os.Exit(1)
-	}
-
-	// TUMBLR connect
-	if err = tumblr.Init(); err != nil {
-		Log(fmt.Sprintf("Cannot connect tumblr client: %s", err))
-		os.Exit(1)
-	}
-
 	// IRCCHAT connect
-	if err = ircchat.Connect(); err != nil {
+	if err := ircchat.Connect(); err != nil {
 		Log(fmt.Sprintf("Cannot connect irc client: %s", err))
 		os.Exit(1)
 	}

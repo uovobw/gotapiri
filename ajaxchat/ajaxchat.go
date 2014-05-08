@@ -6,13 +6,14 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/uovobw/gotapiri/common"
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
 	"os"
 	"time"
+
+	"github.com/uovobw/gotapiri/common"
 )
 
 const configurationFilename = "config.json"
@@ -108,12 +109,12 @@ func readConfiguration(configfilename string) (c common.Config, err error) {
 // Init performs the operations required to authenticate to the
 // webchat as a registered client and returns an error should any
 // http errors occur. MUST be called first on a non initialized client
-func Init() (err error) {
+func init() {
 	Log("In init")
-
+	var err error
 	config, err = readConfiguration(configurationFilename)
 	if err != nil {
-		return errors.New(fmt.Sprintf("coulf not read configuration: %s\n", err))
+		panic(errors.New(fmt.Sprintf("coulf not read configuration: %s\n", err)))
 	}
 
 	user := config.Get("ajaxchat", "httpuser")
@@ -121,13 +122,13 @@ func Init() (err error) {
 
 	err = createClient(user, pass)
 	if err != nil {
-		return errors.New(fmt.Sprintf("could not create web client: %s\n", err))
+		panic(errors.New(fmt.Sprintf("could not create web client: %s\n", err)))
 	}
 	// first get to init the state on the remote end
 	Log("Login (1/2)")
 	_, err = ajaxClient.Get(config.Get("ajaxchat", "login_url"))
 	if err != nil {
-		return errors.New(fmt.Sprintf("could not reach login page: %s\n", err))
+		panic(errors.New(fmt.Sprintf("could not reach login page: %s\n", err)))
 	}
 
 	loginData := url.Values{
@@ -143,9 +144,8 @@ func Init() (err error) {
 	Log("Login (2/2)")
 	_, err = ajaxClient.PostForm(config.Get("ajaxchat", "login_url"), loginData)
 	if err != nil {
-		return errors.New(fmt.Sprintf("could not finalize login: %s\n", err))
+		panic(errors.New(fmt.Sprintf("could not finalize login: %s\n", err)))
 	}
-	return nil
 }
 
 // SendToAjaxchat sends a message to the webchat, must be called only

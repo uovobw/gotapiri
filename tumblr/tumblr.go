@@ -2,11 +2,12 @@ package tumblr
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
+
 	"github.com/MariaTerzieva/gotumblr"
 	"github.com/uovobw/gotapiri/common"
 	"github.com/uovobw/gotapiri/tumblr/linklist"
-	"regexp"
-	"strings"
 )
 
 var (
@@ -23,10 +24,11 @@ func Log(msg string) {
 }
 
 //Init for Tumblr pkg
-func Init() (err error) {
+func init() {
+	var err error
 	config, err = common.ReadConfigFrom(configurationFilename)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	Log("Create tumblr client")
@@ -38,8 +40,6 @@ func Init() (err error) {
 	callbackURL := config.Get("tumblr", "url")
 
 	client = gotumblr.NewTumblrRestClient(appKey, appSecret, oauthToken, oauthTokenSecret, callbackURL, "http://api.tumblr.com")
-
-	return nil
 }
 
 //PostImage post an image on tumblr
@@ -61,11 +61,11 @@ func PostImage(status common.Message) (err error) {
 	tagList := strings.Join(tags, ", ")
 	caption := strings.Join(tags, " ")
 	for _, image := range imagesUrls {
-        if !linklist.Uniq(image) {
-            continue
-        }
-        // also add the original link
-        caption = caption + " from: " + image
+		if !linklist.Uniq(image) {
+			continue
+		}
+		// also add the original link
+		caption = caption + " from: " + image
 		options := map[string]string{
 			"tags":    tagList,
 			"source":  image,
