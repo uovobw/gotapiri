@@ -47,7 +47,7 @@ func saveMonitor() {
 			fmt.Println("Timeout elapsed, saving seen urls")
 		}
 		llist.Save(seenUrlsFile)
-		if c != syscall.SIGHUP {
+		if c != syscall.SIGHUP && c != nil {
 			return
 		}
 	}
