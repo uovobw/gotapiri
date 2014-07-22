@@ -9,12 +9,12 @@ import (
 
 type TestObj struct {
 	Name string
-	Id   int
+	ID   int
 }
 
 func (t TestObj) Hash() (hash string) {
 	h := sha256.New()
-	io.WriteString(h, t.Name+string(t.Id))
+	io.WriteString(h, t.Name+string(t.ID))
 	return string(h.Sum(nil))
 }
 
