@@ -1,10 +1,9 @@
-// Ajaxchat abstracts the details for connecting to blueimp's AjaxChat
+// Package ajaxchat abstracts the details for connecting to blueimp's AjaxChat
 // (homepage: http://frug.github.io/AJAX-Chat/ )
 package ajaxchat
 
 import (
 	"crypto/tls"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -45,7 +44,7 @@ func printBody(r *http.Response) {
 	fmt.Printf("%s\n", stuff)
 }
 
-// Updateloop periodically polls the webchat and fetches the new
+// UpdateLoop periodically polls the webchat and fetches the new
 // messages, unmarshals them from xml to a common.XmlData object and
 // publishes them via the Fromajaxmessage channel
 func UpdateLoop() {
@@ -114,7 +113,7 @@ func init() {
 	var err error
 	config, err = readConfiguration(configurationFilename)
 	if err != nil {
-		panic(errors.New(fmt.Sprintf("coulf not read configuration: %s\n", err)))
+		panic(fmt.Errorf("coulf not read configuration: %s\n", err))
 	}
 
 	user := config.Get("ajaxchat", "httpuser")
@@ -122,13 +121,13 @@ func init() {
 
 	err = createClient(user, pass)
 	if err != nil {
-		panic(errors.New(fmt.Sprintf("could not create web client: %s\n", err)))
+		panic(fmt.Errorf("could not create web client: %s\n", err))
 	}
 	// first get to init the state on the remote end
 	Log("Login (1/2)")
 	_, err = ajaxClient.Get(config.Get("ajaxchat", "login_url"))
 	if err != nil {
-		panic(errors.New(fmt.Sprintf("could not reach login page: %s\n", err)))
+		panic(fmt.Errorf("could not reach login page: %s\n", err))
 	}
 
 	loginData := url.Values{
@@ -144,7 +143,7 @@ func init() {
 	Log("Login (2/2)")
 	_, err = ajaxClient.PostForm(config.Get("ajaxchat", "login_url"), loginData)
 	if err != nil {
-		panic(errors.New(fmt.Sprintf("could not finalize login: %s\n", err)))
+		panic(fmt.Errorf("could not finalize login: %s\n", err))
 	}
 }
 
@@ -158,7 +157,7 @@ func SendToAjaxchat(msg common.Message) (err error) {
 	}
 	_, err = ajaxClient.PostForm(config.Get("ajaxchat", "msg_url"), postData)
 	if err != nil {
-		return errors.New(fmt.Sprintf("could not post message: %s\n", err))
+		return fmt.Errorf("could not post message: %s\n", err)
 	}
 	Log(fmt.Sprintf("sending: %s", postData["text"]))
 	return nil
