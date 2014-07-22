@@ -6,13 +6,13 @@ import (
 	"testing"
 )
 
-func TestParseFromXml(t *testing.T) {
+func TestParseFromXML(t *testing.T) {
 	filename := "test_data/login_fragment.xml"
 	file, err := os.Open(filename)
 	if err != nil {
 		t.Fatalf("failed: %s", err)
 	}
-	xml, err := ParseFromXml(file)
+	xml, err := ParseFromXML(file)
 	if err != nil {
 		t.Fatalf(fmt.Sprintf("%s", err))
 	}
@@ -42,7 +42,7 @@ func TestParseFromXml(t *testing.T) {
 	}
 
 	for _, tstMessage := range xml.Messages {
-		if tstMessage.Id != "212117" ||
+		if tstMessage.ID != "212117" ||
 			tstMessage.DateTime != "Tue, 03 Sep 2013 01:02:51 +0200" ||
 			tstMessage.UserID != "471536092" ||
 			tstMessage.UserRole != "0" ||

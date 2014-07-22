@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 )
 
-// XmlData is used to unmarshal ajaxchat responses from xml
-type XmlData struct {
+// XMLData is used to unmarshal ajaxchat responses from xml
+type XMLData struct {
 	Infos    []Info    `xml:"infos>info"`
 	Messages []Message `xml:"messages>message"`
 	Users    []User    `xml:"users>user"`
@@ -22,7 +22,7 @@ type Info struct {
 
 // Message struct unmasharls the ajaxchat response from the chat
 type Message struct {
-	Id        string `xml:"id,attr"`
+	ID        string `xml:"id,attr"`
 	DateTime  string `xml:"dateTime,attr"`
 	UserID    string `xml:"userID,attr"`
 	UserRole  string `xml:"userRole,attr"`
@@ -52,20 +52,20 @@ func (m Message) ToString() (s string) {
 // object sets
 func (m *Message) Hash() (hash string) {
 	h := sha256.New()
-	io.WriteString(h, m.Id+m.DateTime+m.Username+m.Text)
+	io.WriteString(h, m.ID+m.DateTime+m.Username+m.Text)
 	return string(h.Sum(nil))
 }
 
-// ParseFromXml receives a binary ReadCloser and
-// expects to unmarshal all its contents in an XmlData structure,
+// ParseFromXML receives a binary ReadCloser and
+// expects to unmarshal all its contents in an XMLData structure,
 // returning error on failures
-func ParseFromXml(source io.ReadCloser) (v *XmlData, e error) {
+func ParseFromXML(source io.ReadCloser) (v *XMLData, e error) {
 	data, err := ioutil.ReadAll(source)
 	if err != nil {
 		return nil, e
 	}
 	defer source.Close()
-	v = &XmlData{}
+	v = &XMLData{}
 	err = xml.Unmarshal([]byte(data), v)
 	if err != nil {
 		return nil, e

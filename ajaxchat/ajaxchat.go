@@ -24,7 +24,7 @@ var config common.Config
 
 // Fromajaxmessage returns the messages that are returned
 // from the webchat.
-var FromAjaxMessage = make(chan *common.XmlData, 10)
+var FromAjaxMessage = make(chan *common.XMLData, 10)
 
 // Log temporary function to abstract away the log that needs
 // to be around the code
@@ -45,7 +45,7 @@ func printBody(r *http.Response) {
 }
 
 // UpdateLoop periodically polls the webchat and fetches the new
-// messages, unmarshals them from xml to a common.XmlData object and
+// messages, unmarshals them from xml to a common.XMLData object and
 // publishes them via the Fromajaxmessage channel
 func UpdateLoop() {
 	Log("Running update loop")
@@ -56,7 +56,7 @@ func UpdateLoop() {
 			fmt.Printf("error getting update from chat: %s\n", err)
 			continue
 		}
-		xmlData, err := common.ParseFromXml(resp.Body)
+		xmlData, err := common.ParseFromXML(resp.Body)
 		resp.Body.Close()
 		if err != nil {
 			fmt.Printf("error in parsing data: %s\n", err)
@@ -64,7 +64,7 @@ func UpdateLoop() {
 		}
 		FromAjaxMessage <- xmlData
 		for _, msg := range xmlData.Messages {
-			lastID = msg.Id
+			lastID = msg.ID
 		}
 		//printBody(resp)
 	}

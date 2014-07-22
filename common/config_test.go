@@ -19,8 +19,8 @@ func TestReadConfigFrom(t *testing.T) {
 	if len(config["general"]) != 1 {
 		t.Fatalf("expected 1 elements, got %s", len(config["general"]))
 	}
-	if len(config["tumbl"]) != 4 {
-		t.Fatalf("expected 4 elements, got %s", len(config["tumbl"]))
+	if len(config["tumblr"]) != 5 {
+		t.Fatalf("expected 5 elements, got %s", len(config["tumblr"]))
 	}
 }
 
