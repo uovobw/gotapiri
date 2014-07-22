@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// LinkList abstracts a simple map
 type LinkList struct {
 	links map[string]bool
 }
@@ -18,6 +19,8 @@ const seenUrlsFile = "seenUrls"
 
 var llist = LinkList{make(map[string]bool)}
 
+// Save json marshals the current map into the given filename
+// WARNING: no check is done of existing file, so be careful
 func (l LinkList) Save(filename string) {
 	data, err := json.Marshal(l.links)
 	if err != nil {
@@ -72,6 +75,8 @@ func init() {
 	go saveMonitor()
 }
 
+// Uniq returns false if the link was already "seen" by a previous
+// call or adds the link to the list and returns true
 func Uniq(linkin string) (seen bool) {
 	_, present := llist.links[linkin]
 	if present {
