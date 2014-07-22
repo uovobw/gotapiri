@@ -9,16 +9,16 @@ import (
 	"os"
 )
 
-// Type Config maps the structure of the json configuration
+// Config maps the structure of the json configuration
 // file in the form section: key/value as follows:
 //          "item1" : { ... },
 //          "item2" : { ... }
 type Config map[string]ConfigItem
 
-// Type ConfigItem contains a single section key/value map
+// ConfigItem contains a single section key/value map
 type ConfigItem map[string]string
 
-// Function ReadConfigfFrom loads the configuration from a
+// ReadConfigFrom loads the configuration from a
 // json file passed as the parameter and returns the object
 // that it unmashalled
 func ReadConfigFrom(filename string) (c Config, e error) {
@@ -35,7 +35,7 @@ func ReadConfigFrom(filename string) (c Config, e error) {
 	return c, nil
 }
 
-// Function Get requires a section and a key to retrieve a configuration value,
+// Get requires a section and a key to retrieve a configuration value,
 // so for the example:
 //      {
 //          section1 : { key1 : value1 , key2 : value2 },
