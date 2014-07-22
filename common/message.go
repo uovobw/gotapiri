@@ -7,18 +7,20 @@ import (
 	"io/ioutil"
 )
 
-// Type XmlData is used to unmarshal ajaxchat responses from xml
+// XmlData is used to unmarshal ajaxchat responses from xml
 type XmlData struct {
 	Infos    []Info    `xml:"infos>info"`
 	Messages []Message `xml:"messages>message"`
 	Users    []User    `xml:"users>user"`
 }
 
+// Info represents cdata fields from the ajaxchat response
 type Info struct {
 	Type  string `xml:"type,attr"`
 	Value string `xml:",chardata"`
 }
 
+// Message struct unmasharls the ajaxchat response from the chat
 type Message struct {
 	Id        string `xml:"id,attr"`
 	DateTime  string `xml:"dateTime,attr"`
@@ -29,6 +31,9 @@ type Message struct {
 	Text      string `xml:"text"`
 }
 
+// User contains only the data that is useful for the bot, it is missing
+// some internally meaningful ids for the ajaxchat. Future versions will need
+// to use them in order to better simulate the client
 type User struct {
 	Nick      string `xml:",chardata"`
 	UserID    string `xml:"userID,attr"`
@@ -36,14 +41,14 @@ type User struct {
 	ChannelID string `xml:"channelID,attr"`
 }
 
-// Function ToString returns a human readable representation
+// ToString returns a human readable representation
 // of a given common.Message struct in the form
 // username: text of the message
 func (m Message) ToString() (s string) {
 	return m.Username + ": " + m.Text
 }
 
-// Function Hash implements the Hashable interface, used in
+// Hash implements the Hashable interface, used in
 // object sets
 func (m *Message) Hash() (hash string) {
 	h := sha256.New()
@@ -51,7 +56,7 @@ func (m *Message) Hash() (hash string) {
 	return string(h.Sum(nil))
 }
 
-// Function ParseFromXml receives a binary ReadCloser and
+// ParseFromXml receives a binary ReadCloser and
 // expects to unmarshal all its contents in an XmlData structure,
 // returning error on failures
 func ParseFromXml(source io.ReadCloser) (v *XmlData, e error) {
