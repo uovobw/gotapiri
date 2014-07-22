@@ -44,6 +44,8 @@ func init() {
 	api = anaconda.NewTwitterApi(oauthToken, oauthTokenSecret)
 }
 
+// PostTweet uses the internal twitter api to post a given message
+// trimming away the user that said it
 func PostTweet(status common.Message) (err error) {
 	msg := status.Text
 	user := status.Username
