@@ -1,4 +1,4 @@
-// Package IrcChat abstracts the creation, initialization and use of
+// Package ircchat abstracts the creation, initialization and use of
 // an irc client that connects to a server, joins a definite channel
 // and waits for messages to be sent or received from it
 package ircchat
@@ -27,7 +27,7 @@ func Log(msg string) {
 	fmt.Printf("IRC: %s\n", msg)
 }
 
-// function Init must be called first on a non-initialized irc
+// init must be called first on a non-initialized irc
 // client. It will connect with SSL to a given irc server using a given
 // username, join a channel and wait for messages
 func init() {
@@ -61,7 +61,7 @@ func createMessageFromIrc(l *irc.Line) common.Message {
 
 }
 
-// Function Connect connect the client to a server that is to be specified
+// Connect connect the client to a server that is to be specified
 // in the configuration file
 func Connect() (err error) {
 	// IRC connect
@@ -72,7 +72,7 @@ func Connect() (err error) {
 	return nil
 }
 
-// Function SendToIrc sends the message passed to it
+// SendToIrc sends the message passed to it
 // to the currently connected irc server in the currently
 // joined channel as the configured user
 func SendToIrc(m common.Message) {
